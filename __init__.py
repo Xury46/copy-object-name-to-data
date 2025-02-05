@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Copy Object Name to Data",
     "author": "Xury Greer",
-    "version": (1, 0, 1),
+    "version": (1, 1, 1),
     "blender": (4, 2, 0),
     "location": "Outliner > Context Menu",
     "description": "Rename object data name to match object name",
