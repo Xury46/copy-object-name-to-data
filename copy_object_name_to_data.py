@@ -1,5 +1,8 @@
+from typing import cast
+
 import bpy
-from bpy.types import Operator
+from bpy.types import Context, Object, Operator
+from bpy.props import BoolProperty
 
 
 class OBJECT_OT_copy_object_name_to_data(Operator):
@@ -9,24 +12,50 @@ class OBJECT_OT_copy_object_name_to_data(Operator):
     bl_label = "Copy Object Name to Data"
     bl_options = {"REGISTER", "UNDO"}
 
-    def execute(self, context):
+    invert: BoolProperty(
+        name="Invert",
+        description="Copy the name in the inverted direction: 'data -> object' instead of 'object -> data'",
+        default=False,
+    )
 
-        for object in bpy.context.selected_ids:
-            # Get the object data if it exists (collections, and empty objects have no data).
-            data = getattr(object, "data", None)
+    def execute(self, context: Context) -> set[str]:
+        # Get the valid object IDs from the Outliner selection.
+        objects: list[Object] = [cast(Object, id) for id in context.selected_ids if id.id_type == "OBJECT"]
 
-            if not data:
-                continue
-
-            data.name = object.name
+        if self.invert:
+            self.copy_data_name_to_object(objects)
+        else:
+            self.copy_object_name_to_data(objects)
 
         return {"FINISHED"}
 
+    def copy_object_name_to_data(self, objects: list[Object]) -> None:
+        for object in objects:
+            data = getattr(object, "data", None)
+            if data:
+                data.name = object.name
 
-def draw(self, context):
+    def copy_data_name_to_object(self, objects: list[Object]) -> None:
+        for object in objects:
+            data = getattr(object, "data", None)
+            if data:
+                object.name = data.name
+
+
+def draw(self, context: Context) -> None:
     """Draw the operator as an option on a menu."""
     layout = self.layout
-    layout.operator(OBJECT_OT_copy_object_name_to_data.bl_idname)
+    # Main option
+    object_to_data = layout.operator(
+        OBJECT_OT_copy_object_name_to_data.bl_idname,
+    )
+    object_to_data.invert = False
+    # Inverted option
+    data_to_object = layout.operator(
+        OBJECT_OT_copy_object_name_to_data.bl_idname,
+        text="Copy Data Name to Object",
+    )
+    data_to_object.invert = True
 
 
 def register():

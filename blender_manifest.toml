@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "copy_object_name_to_data"
-version = "1.0.1"
+version = "1.1.1"
 name = "Copy Object Name to Data"
 tagline = "A simple operator to copy object names to object data"
 maintainer = "Xury Greer <xury.greer@gmail.com>"
