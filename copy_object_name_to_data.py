@@ -32,8 +32,12 @@ def draw(self, context):
 def register():
     bpy.utils.register_class(OBJECT_OT_copy_object_name_to_data)
     bpy.types.OUTLINER_MT_object.append(draw)
+    bpy.types.VIEW3D_MT_object_context_menu.append(draw)
+    bpy.types.VIEW3D_MT_object.append(draw)
 
 
 def unregister():
     bpy.utils.unregister_class(OBJECT_OT_copy_object_name_to_data)
     bpy.types.OUTLINER_MT_object.remove(draw)
+    bpy.types.VIEW3D_MT_object_context_menu.remove(draw)
+    bpy.types.VIEW3D_MT_object.remove(draw)
